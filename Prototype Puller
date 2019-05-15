@@ -1,0 +1,18 @@
+url = 'https://www.macys.com/shop/featured/women-handbags'
+
+
+def find_page_items(driver,link):
+    driver.get(link)
+    item_link = [item.find_element_by_tag_name('a').get_attribute('href') for item in driver.find_elements_by_css_selector('li.productThumbnailItem')]
+    for newlink in item_link:
+        res = requests.get(newlink,headers={"User-Agent":"Mozilla/5.0"})
+        soup = BeautifulSoup(res.text,"lxml")
+        name = soup.select_one("h1[itemprop='name']").text.strip()
+        print(name)
+
+if __name__ == '__main__':
+    driver = webdriver.Chrome(options = opts)
+    try:
+        find_page_items(driver,url)
+    finally:
+        driver.quit()
